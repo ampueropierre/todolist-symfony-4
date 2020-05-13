@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Task;
 use AppBundle\Form\TaskType;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,7 +35,7 @@ class TaskController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
             $task->setUser($this->getUser());
@@ -51,6 +52,7 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
+     * @Security("is_granted('ROLE_ADMIN') or task.getUser() != null and user.getId() == task.getUser().getId()")
      * @param Task $task
      * @param Request $request
      *
@@ -94,6 +96,7 @@ class TaskController extends Controller
 
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
+     * @Security("is_granted('ROLE_ADMIN') or task.getUser() != null and user.getId() == task.getUser().getId()")
      * @param Task $task
      *
      * @return Response

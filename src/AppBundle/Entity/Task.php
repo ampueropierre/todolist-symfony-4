@@ -51,7 +51,7 @@ class Task
     private $isDone;
 
     /**
-     * @var User
+     * @var User|null
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="tasks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
@@ -167,9 +167,7 @@ class Task
     }
 
     /**
-     * Get user
-     *
-     * @return User
+     * @return User|null
      */
     public function getUser()
     {
@@ -177,15 +175,10 @@ class Task
     }
 
     /**
-     * Set User
-     *
-     * @param User $user
-     * @return Task
+     * @param User|null $user
      */
-    public  function setUser(User $user)
+    public function setUser($user)
     {
         $this->user = $user;
-
-        return $this;
     }
 }
