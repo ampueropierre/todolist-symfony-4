@@ -49,6 +49,13 @@ class User implements UserInterface
     private $email;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     */
+    private $role;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Task", mappedBy="user")
@@ -150,13 +157,37 @@ class User implements UserInterface
     }
 
     /**
-     * Get roles
+     * Get roles for component Security
      *
      * @return array
      */
     public function getRoles()
     {
-        return array('ROLE_USER');
+        return array($this->role);
+    }
+
+    /**
+     * Get role for database
+     *
+     * @return string
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set role
+     *
+     * @param string $role
+     *
+     * @return $this
+     */
+    public function setRole($role)
+    {
+        $this->role = $role;
+
+        return $this;
     }
 
     public function eraseCredentials()

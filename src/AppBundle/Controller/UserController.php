@@ -7,11 +7,14 @@ use AppBundle\Form\UserType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
     /**
      * @Route("/users", name="user_list")
+     *
+     * @return Response
      */
     public function listAction()
     {
@@ -20,12 +23,14 @@ class UserController extends Controller
 
     /**
      * @Route("/users/create", name="user_create")
+     * @param Request $request
+     *
+     * @return Response
      */
     public function createAction(Request $request)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -46,6 +51,10 @@ class UserController extends Controller
 
     /**
      * @Route("/users/{id}/edit", name="user_edit")
+     * @param User $user
+     * @param Request $request
+     *
+     * @return Response
      */
     public function editAction(User $user, Request $request)
     {
