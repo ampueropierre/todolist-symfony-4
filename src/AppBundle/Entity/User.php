@@ -58,7 +58,7 @@ class User implements UserInterface
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Task", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="user")
      */
     private $tasks;
 

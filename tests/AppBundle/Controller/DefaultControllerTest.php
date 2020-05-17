@@ -2,17 +2,49 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Tests\AppBundle\DataFixtures\DataFixtureTestCase;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class DefaultControllerTest extends WebTestCase
+class DefaultControllerTest extends DataFixtureTestCase
 {
-    public function testIndex()
+    public function setUp()
     {
-        $client = static::createClient();
+        parent::setUp();
+    }
 
-        $crawler = $client->request('GET', '/');
+    public function testRedirectionToLoginForAnonymous()
+    {
+        $this->client->request('GET', '/');
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Welcome to Symfony', $crawler->filter('#container h1')->text());
+        $this->assertTrue($this->client->getResponse() instanceof RedirectResponse);
+        $this->assertRegExp('/\/login$/', $this->client->getResponse()->headers->get('location'));
+    }
+
+    public function testHomepageConnectedAdmin()
+    {
+        $this->logIn('ROLE_ADMIN');
+        $crawler = $this->client->request('GET', '/');
+        $this->assertContains('Bienvenue', $crawler->filter('h1')->text());
+    }
+
+    public function testHomepageConnectedUser()
+    {
+        $this->logIn('ROLE_USER');
+        $crawler = $this->client->request('GET', '/');
+        $this->assertContains('Bienvenue', $crawler->filter('h1')->text());
+    }
+
+    private function logIn($role)
+    {
+        $session = $this->client->getContainer()->get('session');
+
+        $token = new UsernamePasswordToken('user','',  'main', [$role]);
+        $session->set('_security_main', serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $this->client->getCookieJar()->set($cookie);
     }
 }
