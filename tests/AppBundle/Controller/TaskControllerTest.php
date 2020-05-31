@@ -2,15 +2,25 @@
 
 namespace Tests\AppBundle\Controller;
 
+use AppBundle\DataFixtures\AppFixtures;
 use AppBundle\Entity\Task;
-use AppBundle\Entity\User;
-use Tests\AppBundle\DataFixtures\DataFixtureTestCase;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class TaskControllerTest extends DataFixtureTestCase
+class TaskControllerTest extends WebTestCase
 {
-    public function setUp()
+    use FixturesTrait;
+
+    private $client = null;
+
+    private $entityManager;
+
+    public function setUp():void
     {
-        parent::setUp();
+        $this->client = static::createClient();
+        $this->loadFixtures([AppFixtures::class]);
+        $kernel = self::bootKernel();
+        $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
     }
 
     public function testAddTask()
@@ -71,6 +81,7 @@ class TaskControllerTest extends DataFixtureTestCase
         $crawler = $this->client->followRedirect();
 
         $this->assertSame(1, $crawler->filter('.alert-success')->count());
+        $this->entityManager->clear();
         $task = $this->entityManager->getRepository(Task::class)->find(1);
         $this->assertSame(NULL,$task);
     }
@@ -124,6 +135,7 @@ class TaskControllerTest extends DataFixtureTestCase
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
 
+        $this->entityManager->clear();
         $this->assertSame(1, $crawler->filter('.alert-success')->count());
         $task = $this->entityManager->getRepository(Task::class)->find(101);
         $this->assertSame(NULL,$task);

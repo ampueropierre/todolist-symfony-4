@@ -4,16 +4,16 @@ namespace Tests\AppBundle\Entity;
 
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
-use Tests\AppBundle\DataFixtures\DataFixtureTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class TaskTest extends DataFixtureTestCase
+class TaskTest extends WebTestCase
 {
     protected $validator;
 
-    public function setUp()
+    public function setUp():void
     {
-        parent::setUp();
-        $this->validator = $this->container->get('validator');
+        $kernel = self::bootKernel();
+        $this->validator = $kernel->getContainer()->get('validator');
     }
 
     /**
