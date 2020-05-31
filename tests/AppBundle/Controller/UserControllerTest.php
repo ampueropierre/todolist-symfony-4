@@ -2,17 +2,27 @@
 
 namespace Tests\AppBundle\Controller;
 
+use AppBundle\DataFixtures\AppFixtures;
 use AppBundle\Entity\User;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Tests\AppBundle\DataFixtures\DataFixtureTestCase;
 
-class UserControllerTest extends DataFixtureTestCase
+class UserControllerTest extends WebTestCase
 {
+    use FixturesTrait;
 
-    public function setUp()
+    private $client = null;
+
+    private $entityManager;
+
+    public function setUp(): void
     {
-        parent::setUp();
+        $this->client = static::createClient();
+        $this->loadFixtures([AppFixtures::class]);
+        $kernel = self::bootKernel();
+        $this->entityManager = $kernel->getContainer()->get('doctrine')->getManager();
     }
 
     public function testSuccessfullUserList()
@@ -20,7 +30,7 @@ class UserControllerTest extends DataFixtureTestCase
         $this->logIn('ROLE_ADMIN');
         $crawler = $this->client->request('GET', '/users');
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('Liste des utilisateurs', $crawler->filter('h1')->text());
+        $this->assertStringContainsString('Liste des utilisateurs', $crawler->filter('h1')->text());
     }
 
     public function testNoSuccessUserList()
@@ -53,6 +63,7 @@ class UserControllerTest extends DataFixtureTestCase
         $this->client->submit($form);
         $this->client->followRedirect();
 
+        $this->entityManager->clear();
         $user = $this->entityManager->getRepository(User::class)->find(2);
 
         $this->assertSame('ROLE_ADMIN',$user->getRole());
@@ -60,8 +71,7 @@ class UserControllerTest extends DataFixtureTestCase
 
     private function logIn($role)
     {
-        $session = $this->client->getContainer()->get('session');
-
+        $session = static::$container->get('session');
         $token = new UsernamePasswordToken('user','',  'main', [$role]);
         $session->set('_security_main', serialize($token));
         $session->save();

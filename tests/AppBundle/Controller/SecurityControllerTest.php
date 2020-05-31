@@ -2,18 +2,14 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Tests\AppBundle\DataFixtures\DataFixtureTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class SecurityControllerTest extends DataFixtureTestCase
+class SecurityControllerTest extends WebTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     public function testPageIsSuccessfulForAnyone()
     {
-        $this->client->request('GET', '/login');
-        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $client = static::createClient();
+        $client->request('GET', '/login');
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
     }
 }

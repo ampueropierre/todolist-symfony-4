@@ -2,16 +2,18 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Tests\AppBundle\DataFixtures\DataFixtureTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
-class DefaultControllerTest extends DataFixtureTestCase
+class DefaultControllerTest extends WebTestCase
 {
-    public function setUp()
+    private $client = null;
+
+    public function setUp(): void
     {
-        parent::setUp();
+        $this->client = static::createClient();
     }
 
     public function testRedirectionToLoginForAnonymous()
@@ -26,20 +28,19 @@ class DefaultControllerTest extends DataFixtureTestCase
     {
         $this->logIn('ROLE_ADMIN');
         $crawler = $this->client->request('GET', '/');
-        $this->assertContains('Bienvenue', $crawler->filter('h1')->text());
+        $this->assertStringContainsString('Bienvenue', $crawler->filter('h1')->text());
     }
 
     public function testHomepageConnectedUser()
     {
         $this->logIn('ROLE_USER');
         $crawler = $this->client->request('GET', '/');
-        $this->assertContains('Bienvenue', $crawler->filter('h1')->text());
+        $this->assertStringContainsString('Bienvenue', $crawler->filter('h1')->text());
     }
 
     private function logIn($role)
     {
-        $session = $this->client->getContainer()->get('session');
-
+        $session = static::$container->get('session');
         $token = new UsernamePasswordToken('user','',  'main', [$role]);
         $session->set('_security_main', serialize($token));
         $session->save();
