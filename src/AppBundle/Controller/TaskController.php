@@ -17,7 +17,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function listAction()
+    public function list()
     {
         return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAll()]);
     }
@@ -28,7 +28,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function createAction(Request $request)
+    public function create(Request $request)
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
@@ -58,7 +58,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function editAction(Task $task, Request $request)
+    public function edit(Task $task, Request $request)
     {
         $form = $this->createForm(TaskType::class, $task);
 
@@ -84,7 +84,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function toggleTaskAction(Task $task)
+    public function toggleTask(Task $task)
     {
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
@@ -101,7 +101,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function deleteTaskAction(Task $task)
+    public function deleteTask(Task $task)
     {
         $em = $this->getDoctrine()->getManager();
         $em->remove($task);
