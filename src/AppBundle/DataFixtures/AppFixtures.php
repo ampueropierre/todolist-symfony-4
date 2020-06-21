@@ -21,7 +21,7 @@ class AppFixtures extends Fixture
     {
         $admin = new User();
         $admin->setUsername('admin');
-        $admin->setPassword($this->encoder->encodePassword($admin, '0000'));
+        $admin->setPassword('0000');
         $admin->setRole('ROLE_ADMIN');
         $admin->setEmail('admin@domain.fr');
 
@@ -29,7 +29,7 @@ class AppFixtures extends Fixture
 
         $user = new User();
         $user->setUsername('user');
-        $user->setPassword($this->encoder->encodePassword($user, '0000'));
+        $user->setPassword('0000');
         $user->setRole('ROLE_USER');
         $user->setEmail('user@domain.fr');
 

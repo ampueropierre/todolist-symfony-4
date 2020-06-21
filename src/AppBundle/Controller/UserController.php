@@ -23,9 +23,11 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/create", name="user_create")
+     *
      * @param Request $request
      *
      * @return Response
+     * @throws \Symfony\Component\Form\Exception\LogicException
      */
     public function create(Request $request)
     {
@@ -35,8 +37,6 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
 
             $em->persist($user);
             $em->flush();
@@ -51,10 +51,11 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/edit", name="user_edit")
+     *
      * @param User $user
      * @param Request $request
-     *
      * @return Response
+     * @throws \Symfony\Component\Form\Exception\LogicException
      */
     public function edit(User $user, Request $request)
     {
@@ -63,8 +64,8 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
+//            $password = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
+//            $user->setPassword($password);
 
             $this->getDoctrine()->getManager()->flush();
 

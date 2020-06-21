@@ -46,6 +46,31 @@ class UserControllerTest extends WebTestCase
         $this->assertRegExp('/\/login$/', $this->client->getResponse()->headers->get('location'));
     }
 
+    public function testCreateUser()
+    {
+        $crawler = $this->client->request('GET', '/login');
+        $form = $crawler->selectButton('Se connecter')->form();
+        $form['_username'] = 'admin@domain.fr';
+        $form['_password'] = '0000';
+        $this->client->submit($form);
+        $crawler = $this->client->request('GET', '/users/create');
+        $form = $crawler->selectButton('Ajouter')->form();
+        $form['user[username]'] = 'test';
+        $form['user[password][first]'] = '0000';
+        $form['user[password][second]'] = '0000';
+        $form['user[email]'] = 'test@domain.fr';
+        $form['user[role]'] = 'ROLE_USER';
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+
+        $this->assertSame(1, $crawler->filter('.alert-success')->count());
+
+//        $this->entityManager->clear();
+//        $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'test']);
+//        dd($user);
+//        $this->assertSame('test@domain.fr',$user->getEmail());
+    }
+
     public function testUpdateRoleSuccess()
     {
         $user = $this->entityManager->getRepository(User::class)->find(2);
