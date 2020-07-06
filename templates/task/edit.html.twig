@@ -2,6 +2,9 @@
 
 {% block body %}
     <div class="row">
+        <a href="{{ path('task_list') }}" class="btn btn-primary">Retour à la liste des tâches</a>
+    </div>
+    <div class="row">
         {{ form_start(form, {'action' : path('task_edit', { 'id' : task.id })}) }}
             {{ form_widget(form) }}
 
