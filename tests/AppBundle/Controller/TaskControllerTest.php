@@ -113,7 +113,7 @@ class TaskControllerTest extends WebTestCase
         $this->client->submit($form);
         $crawler = $this->client->request('GET', '/tasks');
 
-        $form = $crawler->selectButton('Supprimer')->eq(101)->form();
+        $form = $crawler->selectButton('Supprimer')->eq(6)->form();
         $this->client->submit($form);
 
         $this->assertSame(403, $this->client->getResponse()->getStatusCode());
@@ -121,7 +121,7 @@ class TaskControllerTest extends WebTestCase
 
     public function testDeleteTaskUserByUser()
     {
-        $task = $this->entityManager->getRepository(Task::class)->find(101);
+        $task = $this->entityManager->getRepository(Task::class)->find(6);
         $this->assertTrue(true,isset($task));
 
         $crawler = $this->client->request('GET', '/login');
@@ -131,13 +131,13 @@ class TaskControllerTest extends WebTestCase
         $this->client->submit($form);
         $crawler = $this->client->request('GET', '/tasks');
 
-        $form = $crawler->selectButton('Supprimer')->eq(100)->form();
+        $form = $crawler->selectButton('Supprimer')->eq(5)->form();
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
 
         $this->entityManager->clear();
         $this->assertSame(1, $crawler->filter('.alert-success')->count());
-        $task = $this->entityManager->getRepository(Task::class)->find(101);
+        $task = $this->entityManager->getRepository(Task::class)->find(6);
         $this->assertSame(NULL,$task);
     }
 }

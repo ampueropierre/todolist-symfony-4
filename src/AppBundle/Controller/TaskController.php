@@ -90,6 +90,7 @@ class TaskController extends AbstractController
 
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
+     * @Security("is_granted('ROLE_ADMIN') or task.getUser() != null and user.getId() == task.getUser().getId()")
      * @param Task $task
      *
      * @return Response

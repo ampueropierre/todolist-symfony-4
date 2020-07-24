@@ -35,7 +35,7 @@ class AppFixtures extends Fixture
 
         $manager->persist($user);
 
-        for ($i=0; $i < 100; $i++) {
+        for ($i=0; $i < 5; $i++) {
             $task = new Task();
             $task->setTitle('title-'.$i);
             $task->setCreatedAt(new \DateTime());
