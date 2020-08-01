@@ -8,7 +8,7 @@
     <a href="{{ path('task_list_done') }}" class="btn btn-info pull-right">Liste des tâches terminer</a>
     <div class="row">
         {% for task in tasks %}
-        <div class="col-sm-4 col-lg-4 col-md-4">
+        <div class="col-sm-4 col-md-3 col-lg-4">
             <div class="thumbnail">
                 <div class="caption">
                     <h4 class="pull-right">
@@ -18,7 +18,6 @@
                     <p>{{ task.content }}</p>
                 </div>
                 <div>
-                    {% if app.user == task.user or is_granted('ROLE_ADMIN') %}
                     <form action="{{ path('task_toggle', {'id' : task.id }) }}">
                         <button class="btn btn-success btn-sm pull-right">
                             {% if not task.isDone %}Marquer comme faite{% else %}Marquer non terminée{% endif %}
@@ -28,7 +27,6 @@
                     <form action="{{ path('task_delete', {'id' : task.id }) }}">
                         <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
                     </form>
-                    {% endif %}
                 </div>
             </div>
         </div>
